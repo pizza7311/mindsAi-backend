@@ -47,7 +47,17 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    return `This action returns a #${id} user`;
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          id: id,
+        },
+      });
+
+      return user;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
