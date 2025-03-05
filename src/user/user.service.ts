@@ -67,6 +67,25 @@ export class UserService {
     }
   }
 
+  async findByEmail(email: string) {
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          email: email,
+        },
+      });
+
+      if (!user) {
+        //FIXME 아래에 catch throw 겹치는 부분 수정
+        throw new NotFoundException('User Not found.');
+      }
+
+      return user;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     //TODO jwt로 본인 계정만 수정가능하게 예외추가
 
