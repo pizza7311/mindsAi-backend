@@ -3,7 +3,6 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
-  Post,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,7 +14,6 @@ import { Prisma } from '@prisma/client';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<string> {
     const { email, name, password } = createUserDto;
     const hashedPassword = await hashPassword(password);
@@ -40,10 +38,15 @@ export class UserService {
   }
 
   async findAll() {
-    return `This action returns all user`;
+    try {
+      const users = await this.prisma.user.findMany();
+      return users;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return `This action returns a #${id} user`;
   }
 
