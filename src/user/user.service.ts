@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -55,6 +56,11 @@ export class UserService {
         },
       });
 
+      if (!user) {
+        //FIXME 아래에 catch throw 겹치는 부분 수정
+        throw new NotFoundException('User Not found.');
+      }
+
       return user;
     } catch (e) {
       throw new InternalServerErrorException(e);
@@ -71,17 +77,19 @@ export class UserService {
         res['password'] = await hashPassword(password);
       }
 
-      try {
-        await this.prisma.user.update({
-          where: { id: id },
-          data: res,
-        });
-        //TODO 업데이트 된 필드 리스폰스
-        return `This action updates a #${id} user`;
-      } catch (e) {
-        throw new InternalServerErrorException(e);
-      }
+      await this.prisma.user.update({
+        where: { id: id },
+        data: res,
+      });
+      //TODO 업데이트 된 필드 리스폰스
+      return `This action updates a #${id} user`;
     } catch (e) {
+      //not found error
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new ForbiddenException('User Not found.');
+        }
+      }
       throw new InternalServerErrorException(e);
     }
   }
