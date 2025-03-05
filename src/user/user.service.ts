@@ -94,7 +94,20 @@ export class UserService {
     }
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    try {
+      //TODO 본인 확인
+      const user = await this.prisma.user.findFirst({ where: { id: id } });
+      if (!user) {
+        throw new NotFoundException('User Not found.');
+      }
+      await this.prisma.user.update({
+        where: { id: id },
+        data: { isActive: false },
+      });
+      return `This action removes a #${id} user`;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 }
