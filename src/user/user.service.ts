@@ -1,5 +1,4 @@
 import {
-  Body,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -14,7 +13,7 @@ import { Prisma } from '@prisma/client';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async create(@Body() createUserDto: CreateUserDto): Promise<string> {
+  async create(createUserDto: CreateUserDto): Promise<string> {
     const { email, name, password } = createUserDto;
     const hashedPassword = await hashPassword(password);
     try {
@@ -60,8 +59,29 @@ export class UserService {
     }
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    //TODO jwt로 본인 계정만 수정가능하게 예외추가
+
+    try {
+      const { password, ...res } = updateUserDto;
+
+      if (password) {
+        res['password'] = await hashPassword(password);
+      }
+
+      try {
+        await this.prisma.user.update({
+          where: { id: id },
+          data: res,
+        });
+        //TODO 업데이트 된 필드 리스폰스
+        return `This action updates a #${id} user`;
+      } catch (e) {
+        throw new InternalServerErrorException(e);
+      }
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   async remove(id: number) {
