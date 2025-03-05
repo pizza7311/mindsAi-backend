@@ -9,7 +9,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import { hashPassword } from 'utils/hash';
 import { Prisma } from '@prisma/client';
-import { Request } from 'express';
 import { AuthPayload } from 'src/auth/entities/payload';
 
 @Injectable()
