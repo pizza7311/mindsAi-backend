@@ -6,7 +6,6 @@ import {
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
-import { hashPassword } from 'utils/hash';
 import { AuthPayload } from './entities/payload';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
