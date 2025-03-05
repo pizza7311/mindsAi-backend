@@ -38,7 +38,9 @@ export class UserService {
 
   async findAll() {
     try {
-      const users = await this.prisma.user.findMany();
+      const users = await this.prisma.user.findMany({
+        where: { isActive: true },
+      });
       return users;
     } catch (e) {
       throw new InternalServerErrorException(e);
