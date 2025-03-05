@@ -21,5 +21,5 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  isActive  Boolean  @default(false)
+  isActive  Boolean  @default(true)
 }
