@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Request } from 'express';
+import { AuthPayload } from 'src/auth/entities/payload';
 
 @Controller('user')
 export class UserController {
@@ -36,13 +39,19 @@ export class UserController {
 
   @Patch(':id')
   @UseGuards(AuthGuard)
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() req: Request,
+  ) {
+    const payload = req['user'] as AuthPayload;
+    return this.userService.update(id, updateUserDto, payload);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  remove(@Param('id') id: string) {
-    return this.userService.remove(id);
+  remove(@Param('id') id: string, @Req() req: Request) {
+    const payload = req['user'] as AuthPayload;
+    return this.userService.remove(id, payload);
   }
 }

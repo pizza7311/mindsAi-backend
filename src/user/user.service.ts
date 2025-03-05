@@ -9,6 +9,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import { hashPassword } from 'utils/hash';
 import { Prisma } from '@prisma/client';
+import { Request } from 'express';
+import { AuthPayload } from 'src/auth/entities/payload';
 
 @Injectable()
 export class UserService {
@@ -86,11 +88,13 @@ export class UserService {
     }
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    //TODO jwt로 본인 계정만 수정가능하게 예외추가
-
+  async update(id: string, updateUserDto: UpdateUserDto, reqUser: AuthPayload) {
     try {
       const { password, ...res } = updateUserDto;
+      const user = await this.findOne(id);
+      if (user.email !== reqUser.email) {
+        throw new ForbiddenException('Forbidden request.');
+      }
 
       if (password) {
         res['password'] = await hashPassword(password);
@@ -104,27 +108,26 @@ export class UserService {
       return `This action updates a #${id} user`;
     } catch (e) {
       //not found error
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
-          throw new NotFoundException('User Not found.');
-        }
-      }
+      // if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      //   if (e.code === 'P2025') {
+      //     throw new NotFoundException('User Not found.');
+      //   }
+      // }
       throw new InternalServerErrorException(e);
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string, reqUser: AuthPayload) {
     try {
-      //TODO 본인 확인
-      const user = await this.prisma.user.findFirst({ where: { id: id } });
-      if (!user) {
-        throw new NotFoundException('User Not found.');
+      const user = await this.findOne(id);
+      if (user.email !== reqUser.email) {
+        throw new ForbiddenException('Forbidden request.');
       }
       await this.prisma.user.update({
         where: { id: id },
         data: { isActive: false },
       });
-      return `This action removes a #${id} user`;
+      return `User '${id}' was deleted.`;
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
