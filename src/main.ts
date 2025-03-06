@@ -13,7 +13,7 @@ async function bootstrap() {
     .setTitle('MindsAi Assignment')
     .setDescription('MindsAi backend assignment api doc')
     .setVersion('1.0')
-    .addTag('user')
+    .addCookieAuth('access_token')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-doc', app, documentFactory);
