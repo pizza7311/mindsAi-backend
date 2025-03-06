@@ -45,4 +45,13 @@ export class AuthService {
       throw new InternalServerErrorException(e);
     }
   }
+
+  signOut(res: Response) {
+    res.cookie('access_token', '', {
+      maxAge: 0,
+      httpOnly: true,
+    });
+
+    return 'Signed out.';
+  }
 }

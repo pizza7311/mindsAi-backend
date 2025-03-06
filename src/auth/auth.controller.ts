@@ -21,4 +21,16 @@ export class AuthController {
   ) {
     return this.authService.signIn(signInDto, res);
   }
+
+  @Post('logout')
+  @ApiOperation({
+    summary: '로그아웃',
+    description: '쿠키에 저장된 access_token 삭제',
+  })
+  @ApiOkResponse({
+    example: 'Singed out.',
+  })
+  signOut(@Res({ passthrough: true }) res: Response) {
+    return this.authService.signOut(res);
+  }
 }
