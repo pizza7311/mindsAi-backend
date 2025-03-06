@@ -11,6 +11,24 @@ services:
       - '3306:3306'
     networks:
       - backend-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - backend-network
+    depends_on:
+      db:
+        condition: service_healthy
+    
+  
 networks:
   backend-network:
     
