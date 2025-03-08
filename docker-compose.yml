@@ -16,7 +16,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-  backend:
+  server:
     build:
       context: .
       dockerfile: Dockerfile
@@ -24,6 +24,8 @@ services:
       - "3000:3000"
     networks:
       - backend-network
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
     depends_on:
       db:
         condition: service_healthy

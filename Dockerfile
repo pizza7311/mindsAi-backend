@@ -7,5 +7,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-CMD ["npm", "run", "prisma:init", "&&", "npm", "run", "start:dev"]
+CMD ["/entrypoint.sh"]
