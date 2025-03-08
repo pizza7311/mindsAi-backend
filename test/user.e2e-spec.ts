@@ -1,10 +1,9 @@
 import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 
-//import { UserService } from '../src/user/user.service';
 import { INestApplication } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { AppModule } from '../src/app.module';
-import { PrismaService } from 'prisma/prisma.service';
 
 //테스트 코드 보류
 describe('User test (e2e)', () => {

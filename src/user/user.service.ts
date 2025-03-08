@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'prisma/prisma.service';
-import { hashPassword } from 'utils/hash';
+import { PrismaService } from '../../prisma/prisma.service';
+import { hashPassword } from '../../utils/hash';
 import { Prisma } from '@prisma/client';
 import { AuthPayload } from 'src/auth/entities/payload';
 
