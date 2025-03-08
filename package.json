@@ -18,7 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma:init": "npx prisma migrate dev --name init"
+    "prisma:init": "npx prisma migrate dev --name init",
+    "docker:init": "docker-compose up -d",
+    "docker:start": "docker-compose start",
+    "docker:stop": "docker-compose stop"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
