@@ -10,6 +10,10 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { hashPassword } from '../../utils/hash';
 import { Prisma } from '@prisma/client';
 import { AuthPayload } from 'src/auth/entities/payload';
+import { plainToInstance } from 'class-transformer';
+//FIXME user 리스폰스 타입 제대로 정의 필요
+import { CreateUserResponse } from './dto/create-user.response.dto';
+import { UsersResponse } from './dto/user.response.dto';
 
 @Injectable()
 export class UserService {
@@ -43,7 +47,13 @@ export class UserService {
       const users = await this.prisma.user.findMany({
         where: { isActive: true },
       });
-      return { users };
+      return plainToInstance(
+        UsersResponse,
+        { users },
+        {
+          excludeExtraneousValues: true,
+        },
+      );
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -62,7 +72,7 @@ export class UserService {
         throw new NotFoundException('User Not found.');
       }
 
-      return user;
+      return { user: plainToInstance(CreateUserResponse, user) };
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -90,7 +100,7 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto, reqUser: AuthPayload) {
     try {
       const { password, ...res } = updateUserDto;
-      const user = await this.findOne(id);
+      const { user } = await this.findOne(id);
       if (user.email !== reqUser.email) {
         throw new ForbiddenException('Forbidden request.');
       }
@@ -118,7 +128,7 @@ export class UserService {
 
   async remove(id: string, reqUser: AuthPayload) {
     try {
-      const user = await this.findOne(id);
+      const { user } = await this.findOne(id);
       if (user.email !== reqUser.email) {
         throw new ForbiddenException('Forbidden request.');
       }
