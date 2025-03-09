@@ -14,7 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '../../src/auth/auth.guard';
 import { Request } from 'express';
-import { AuthPayload } from '@/src/auth/entities/payload';
+import { AuthPayload } from '../../src/auth/entities/payload';
 import {
   ApiCookieAuth,
   ApiCreatedResponse,
