@@ -70,6 +70,7 @@ export class UserController {
     description: '유저',
     type: UserResponse,
   })
+  @ApiCookieAuth()
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
@@ -83,6 +84,7 @@ export class UserController {
     description: '수정하려는 id가 현재 로그인된 계정이 아닐경우 403',
     example: 'Forbidden request.',
   })
+  @ApiCookieAuth()
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -104,6 +106,7 @@ export class UserController {
     description: '수정하려는 id가 현재 로그인된 계정이 아닐경우 403',
     example: 'Forbidden request.',
   })
+  @ApiCookieAuth()
   remove(@Param('id') id: string, @Req() req: Request) {
     const payload = req['user'] as AuthPayload;
     return this.userService.remove(id, payload);
