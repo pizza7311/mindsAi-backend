@@ -16,4 +16,4 @@ if [ ! -f "$INIT_FILE" ]; then
 fi
 
 # 서버 실행
-npm start:dev
+npm run start:dev
