@@ -3,6 +3,7 @@
 * Nest.js
 * Prisma
 * Docker
+* Swagger (/api-docs)
 
 ### 실행 방법
 해당 프로젝트는 백엔드는 `node:20` db는 `mysql:8.0` docker 이미지에서 실행됩니다.  
@@ -56,5 +57,5 @@ DATABASE_URL="mysql://root:rootpassword@localhost:3306/mindsai"
 ```
 2. npm run prisma:deploy 명령어 실행  
 host 와 실행중인 db의 prisma 초기화 작업을 실행하는 과정입니다.
-3. npm run test:e2e 명령어 실행
+3. npm run test:e2e 명령어 실행  
 e2e 테스트 코드를 실행 합니다.
