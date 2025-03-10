@@ -1,98 +1,61 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+## Minds Ai 백엔드 과제
+### 기술 스택
+* Nest.js
+* Prisma
+* Docker
+* Swagger (/api-docs)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+### 실행 방법
+해당 프로젝트는 백엔드는 `node:20` db는 `mysql:8.0` docker 이미지에서 실행됩니다.  
+**참고**: 해당 프로젝트를 실행시키기 전 호스트 pc에서 mysql 서비스가 실행중이라면 종료 시켜야합니다.  
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### .env 파일
+실행전 아래의 내용을 프로젝트 루트 디렉토리에 `.env` 파일로 추가합니다
+```
+DATABASE_URL="mysql://root:rootpassword@db:3306/mindsai"
+MYSQL_ROOT_PASSWORD="rootpassword"
+MYSQL_USER='test'
+MYSQL_PASSWORD='devpassword'
+MYSQL_DATABASE='mindsai'
+MYSQL_HOST='db'
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+JWT_SECRET='some jwt text'
 ```
 
-## Compile and run the project
+### 초기화 및 실행
+![image](https://github.com/user-attachments/assets/89a63461-69f9-48db-9d95-001d791e6bbf)
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run docker:init
 ```
+백엔드 소스 코드를 포함하여 'mindsai-backend' docker 이미지를 빌드하고 실행시키며 mysql db 컨테이너를 실행시킵니다.  
+db 컨테이너 초기화가 끝나면 backend 컨테이너에서 prisma 초기화를 실행하고 `http://localhost:3000` 에서 nest.js 앱이 **dev 모드**로 실행됩니다.  
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
+### 실행 중지 및 다시 실행
 ```
+npm run docker:stop
+```
+실행중인 컨테이너들을 중지시킵니다.  
+```
+npm run docker:start
+```
+중지된 컨테이너를 다시 실행시킵니다.  
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### e2e 테스트 실행
+![image](https://github.com/user-attachments/assets/98fe02a1-2161-44ce-aa76-4388f0c78f2d)
 
-## Resources
+해당 프로젝트에서 작성된 e2e 테스트는 별도의 테스트용 db를 구축하지 않아 실제 실행중인 db에서 e2e 테스트를 실행합니다.  
+e2e 테스트를 실행하면 호스트에서 실행중인 db 컨테이너와 연결하여 테스트를 진행합니다.  
+컨테이너에서 nest를 실행시킬때와 e2e 테스트시 사용하는 DATABASE_URL이 서로 다릅니다 아직 동적으로 env를 적용하는 기능은 구현되지 않아 직접 `.env` 의 `DATABASE_URL` 을 수정해줘야 합니다.  
+아래의 순서대로 진행해 주세요.  
 
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+1. .env 파일 수정
+```
+# .env
+# db->localhost 로 변경
+DATABASE_URL="mysql://root:rootpassword@localhost:3306/mindsai"
+```
+2. npm run prisma:deploy 명령어 실행  
+host 와 실행중인 db의 prisma 초기화 작업을 실행하는 과정입니다.
+3. npm run test:e2e 명령어 실행  
+e2e 테스트 코드를 실행 합니다.
